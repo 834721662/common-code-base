@@ -1,0 +1,47 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<configuration scan="true" scanPeriod="60" debug="false">
+
+    <property name="app.name" value="server"/>
+    <appender name="stdout" class="ch.qos.logback.core.ConsoleAppender">
+        <encoder>
+            <!--日志格式化-->
+            <pattern>%d [%thread] %-5level %logger{36} - %msg%n</pattern>
+        </encoder>
+    </appender>
+
+    <!--滚动日志-->
+    <appender name="file" class="ch.qos.logback.core.rolling.RollingFileAppender">
+        <encoding>UTF-8</encoding>
+        <file>${home}/logs/${app.name}.log</file>
+        <rollingPolicy class="ch.qos.logback.core.rolling.TimeBasedRollingPolicy">
+            <fileNamePattern>${home}/logs/${app.name}.%d{yyyy-MM-dd}.log.gz</fileNamePattern>
+            <maxHistory>5</maxHistory>
+        </rollingPolicy>
+        <encoder>
+            <pattern>%d [%thread] %-5level %logger{36} - %msg%n</pattern>
+        </encoder>
+    </appender>
+
+    <!--滚动日志 对应的是fail-->
+    <appender name="send_fail" class="ch.qos.logback.core.rolling.RollingFileAppender">
+        <encoder>UTF-8</encoder>
+        <rollingPolicy class="ch.qos.logback.core.rolling.TimeBasedRollingPolicy">
+            <fileNamePattern>${home}/logs/${fail.log}.%d{yyyy-MM-dd}.log</fileNamePattern>
+            <maxHistory>7</maxHistory>
+        </rollingPolicy>
+        <encoder>
+            <pattern>%msg%n</pattern>
+        </encoder>
+    </appender>
+
+    <!--name & ref 对应的是你的服务，比如接口服务就是fail 服务器类型使用 localhost_access-->
+    <logger name="send_fail_logger" level="INFO" additivity="false">
+        <appender-ref ref="send_fail"/>
+    </logger>
+
+    <!--日志输出的级别 info debug error-->
+    <root level="INFO">
+        <appender-ref ref="STDOUT"/>
+        <appender-ref ref="file"/>
+    </root>
+</configuration>
